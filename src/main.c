@@ -50,29 +50,17 @@ int 	**map()
 		int i;
 		i = 0;
 		int j;
-		j = 0;
 		while (i < mapHeight)
 		{
+			j = 0;
 			map[i] = malloc(sizeof(int) * mapWidth);
 			while (j < mapWidth)
 			{
 				map[i][j] = map_test[i][j];
-				printf("%d", map[i][j++]);
+				j++;
 			}
-			printf("\n");
 			i++;
 		}
-
-		// i = 0;
-		// int j = 0;
-		// while (i < mapHeight)
-		// {
-		// 	while (j < mapWidth)
-		// 		printf("%d", map_test[i][j++]);
-		// 	printf("\n");
-		// 	i++;
-		// }
-
 	return map;
 }
 
@@ -84,18 +72,19 @@ int main()
 
 	test = map();
 
-	// int i = 0;
-	// int j = 0;
-	// while (i < mapHeight)
-	// {
-	// 	while (j < mapWidth)
-	// 	{
-	// 		printf("%d", test[i][j]);
-	// 		j++;
-	// 	}
-	// 	printf("\n");
-	// 	i++;
-	// }
+	int i = 0;
+	int j;
+	while (i < mapHeight)
+	{
+		j = 0;
+		while (j < mapWidth)
+		{
+			printf("%d", test[i][j]);
+			j++;
+		}
+		printf("\n");
+		i++;
+	}
 
 	return (0);
 }
