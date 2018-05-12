@@ -16,4 +16,12 @@
 # include "libft.h"
 
 
+typedef struct s_mlx
+{
+  void *mlx_ptr;
+  void *win_ptr;
+}               t_mlx;
+
+int keys(int key, t_mlx *mlx);
+
 #endif

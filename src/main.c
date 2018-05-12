@@ -66,25 +66,54 @@ int 	**map()
 
 
 
+t_mlx 	*init_mlx(char *str)
+{
+	t_mlx *tmp;
+
+	if (!(tmp = malloc(sizeof(t_mlx))))
+		return (NULL);
+	tmp->mlx_ptr = mlx_init();
+	tmp->win_ptr = mlx_new_window(tmp->mlx_ptr, 512, 384, str);
+	return tmp;
+}
+
 int main()
 {
 	int **test;
 
 	test = map();
 
-	int i = 0;
-	int j;
-	while (i < mapHeight)
-	{
-		j = 0;
-		while (j < mapWidth)
-		{
-			printf("%d", test[i][j]);
-			j++;
-		}
-		printf("\n");
-		i++;
-	}
+	// int i = 0;
+	// int j;
+	// while (i < mapHeight)
+	// {
+	// 	j = 0;
+	// 	while (j < mapWidth)
+	// 	{
+	// 		printf("%d", test[i][j]);
+	// 		j++;
+	// 	}
+	// 	printf("\n");
+	// 	i++;
+	// }
 
+
+	t_mlx *mlx;
+	mlx = init_mlx("raycaster");
+
+	// double x = 22;
+	// double y = 12;
+  //
+	// double dirx = -1;
+	// double diry = 0;
+	// double planex = 0;
+	// double planey = 0.66;
+  //
+	// double time = 0;
+	// double oldTime = 0;
+
+
+	mlx_hook(mlx->win_ptr, 2, 0, keys, mlx);
+	mlx_loop(mlx->mlx_ptr);
 	return (0);
 }
