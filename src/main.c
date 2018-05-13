@@ -101,19 +101,70 @@ int main()
 	t_mlx *mlx;
 	mlx = init_mlx("raycaster");
 
-	// double x = 22;
-	// double y = 12;
+	 double posx = 22;
+	 double posy = 12;
   //
-	// double dirx = -1;
-	// double diry = 0;
-	// double planex = 0;
-	// double planey = 0.66;
+	 double dirx = -1;
+	 double diry = 0;
+	 double planex = 0;
+	 double planey = 0.66;
   //
 	// double time = 0;
 	// double oldTime = 0;
+
+	
+	
+	//ray casting loop
+	double camerax;
+	double rayx;
+	double rayy;
+	int x = 0;
+	while (x < mapWidth)
+	{
+		//calculate ray position and direction
+		camerax = 2 * x / x - 1;
+		rayx = dirx + planex * camerax;
+		rayy = diry + planey * camerax;
+		x++;
+
+		//which box of the map we're in
+		int mapx = posx;
+		int mapy = posy;
+
+		//lenght of ray from current position to the next x or y-side
+		double sideDistX;
+		double sideDistY;
+	
+		// length of ray from one x to another x-side 
+		// length of ray from one y to another y-side
+		double deltaDistX = fabs(1/ rayx);
+		double deltaDistY = fabs(1/ rayy);
+		double perpWallDist;
+
+		//what direction to step in , x or y direction (either +1 or -1)
+		int stepx;
+		int stepy;
+		
+		int hit = 0; //was there a wall hit?
+		int side; //was a NS or a EW wall hit?
+
+	}
 
 
 	mlx_hook(mlx->win_ptr, 2, 0, keys, mlx);
 	mlx_loop(mlx->mlx_ptr);
 	return (0);
 }
+
+
+
+
+
+
+
+
+
+
+
+
+
