@@ -10,11 +10,13 @@
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "fractol.h"
+#include "wolf3d.h"
 #include <stdio.h>
+#define WIDTH 1280
+#define HEIGHT 800
 
 int main()
-{	
+{
 	void *mlx_ptr;
 	void *win_ptr;
 	void *img;
@@ -40,9 +42,9 @@ int main()
 	y = 100;
 	i = x + (y * WIDTH);
 	img_ptr[i] = color;
-	
+
 	mlx_put_image_to_window(mlx_ptr, win_ptr, img, 0, 0);
-	mlx_key_hook(win_ptr, keys, (void *)0);
+	// mlx_key_hook(win_ptr, keys, (void *)0);
 	mlx_loop(mlx_ptr);
 
 	return (0);

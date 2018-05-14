@@ -14,12 +14,19 @@
 # define WOLF3D_H
 # include "mlx.h"
 # include "libft.h"
-
+# define WIDTH 512
+# define HEIGHT 384
 
 typedef struct s_mlx
 {
   void *mlx_ptr;
   void *win_ptr;
+  void *img;
+  int *img_ptr;
+  int bbp;
+  int stride;
+  int endian;
+
 }               t_mlx;
 
 int keys(int key, t_mlx *mlx);
