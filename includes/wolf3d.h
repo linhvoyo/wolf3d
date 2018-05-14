@@ -17,6 +17,14 @@
 # define WIDTH 512
 # define HEIGHT 384
 
+typedef struct s_wolf
+{
+    double dirx;
+    double diry;
+    double posy;
+    double posx;
+}               t_wolf;
+
 typedef struct s_mlx
 {
   void *mlx_ptr;
@@ -26,6 +34,7 @@ typedef struct s_mlx
   int bbp;
   int stride;
   int endian;
+  t_wolf   *wolf;
 
 }               t_mlx;
 
