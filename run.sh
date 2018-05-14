@@ -1,3 +1,3 @@
 
 #gcc -I ./minilibx_macos  -L ./minilibx_macos -l mlx -framework OpenGL -framework AppKit
-gcc  -Wall -Wextra -Werror src/*.c -I ./includes -I ./libft/includes -L ./libft/ -l ft -I ./minilibx_macos -L ./minilibx_macos -l mlx -framework OpenGL -framework AppKit -o wolf3d
+gcc  src/*.c -I ./includes -I ./libft/includes -L ./libft/ -l ft -I ./minilibx_macos -L ./minilibx_macos -l mlx -framework OpenGL -framework AppKit -o wolf3d

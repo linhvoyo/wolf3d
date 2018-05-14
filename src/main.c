@@ -6,12 +6,13 @@
 /*   By: lilam <marvin@42.fr>                       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/05/03 20:21:18 by lilam             #+#    #+#             */
-/*   Updated: 2018/05/03 20:22:39 by lilam            ###   ########.fr       */
+/*   Updated: 2018/05/13 17:17:25 by linh             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "wolf3d.h"
 #include <stdio.h>
+#include <math.h>
 #define mapWidth 24
 #define mapHeight 24
 
@@ -79,9 +80,9 @@ t_mlx 	*init_mlx(char *str)
 
 int main()
 {
-	int **test;
+	int **worldMap;
 
-	test = map();
+	worldMap = map();
 
 	// int i = 0;
 	// int j;
@@ -112,8 +113,8 @@ int main()
 	// double time = 0;
 	// double oldTime = 0;
 
-	
-	
+
+
 	//ray casting loop
 	double camerax;
 	double rayx;
@@ -122,10 +123,9 @@ int main()
 	while (x < mapWidth)
 	{
 		//calculate ray position and direction
-		camerax = 2 * x / x - 1;
+		camerax = 2 * x / (double)x - 1;
 		rayx = dirx + planex * camerax;
 		rayy = diry + planey * camerax;
-		x++;
 
 		//which box of the map we're in
 		int mapx = posx;
@@ -134,8 +134,8 @@ int main()
 		//lenght of ray from current position to the next x or y-side
 		double sideDistX;
 		double sideDistY;
-	
-		// length of ray from one x to another x-side 
+
+		// length of ray from one x to another x-side
 		// length of ray from one y to another y-side
 		double deltaDistX = fabs(1/ rayx);
 		double deltaDistY = fabs(1/ rayy);
@@ -144,10 +144,62 @@ int main()
 		//what direction to step in , x or y direction (either +1 or -1)
 		int stepx;
 		int stepy;
-		
-		int hit = 0; //was there a wall hit?
-		int side; //was a NS or a EW wall hit?
 
+		int hit = 0; //was there a wall hit?
+		int side; //was a NS or a EW wall hit?;
+
+		//calculate step and initial sideDist
+		if (rayx < 0)
+		{
+			stepx = -1;
+			sideDistX = (posx - mapx) * deltaDistX;
+		}
+		else
+		{
+			stepx = 1;
+			sideDistX = (mapx + 1.0 - posx) * deltaDistX;
+		}
+		if (rayy < 0)
+		{
+			stepy = -1;
+			sideDistY = (posy - mapy) * deltaDistY;
+		}
+		else
+		{
+			stepy = 1;
+			sideDistY = (mapy + 1.0 - posy) * deltaDistY;
+		}
+
+		//perform DDA
+		while (hit == 0)
+		{
+			//jump to next map sqaure, or in direction of x or y
+			if (sideDistX < sideDistY)
+			{
+				sideDistX += deltaDistX;
+				mapx += stepx;
+				side = 0;
+			}
+			else
+			{
+				sideDistY += deltaDistY;
+				mapy += stepy;
+				side = 1;
+			}
+			//Check if ray has hit a wall
+			if (worldMap[mapx][mapy] > 0)
+				hit = 1;
+		}
+
+		//Calculate distance projected on camera direction
+		if (side == 0)
+			perpWallDist = (mapx - posx + (1 - stepx) / 2) / rayx;
+		else
+			perpWallDist = (mapy - posy + (1 - stepy) / 2) / rayy;
+			
+
+
+		x++;
 	}
 
 
@@ -155,16 +207,3 @@ int main()
 	mlx_loop(mlx->mlx_ptr);
 	return (0);
 }
-
-
-
-
-
-
-
-
-
-
-
-
-
