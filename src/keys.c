@@ -10,8 +10,15 @@ int keys(int key, t_mlx *mlx)
   {
       mlx->wolf->posx += mlx->wolf->dirx;
       mlx->wolf->posy += mlx->wolf->diry;
+      render_wolf(mlx);
+  }
+  if (key == 125)
+  {
+      mlx->wolf->posx -= mlx->wolf->dirx;
+      mlx->wolf->posy -= mlx->wolf->diry;
+      render_wolf(mlx);
   }
   printf("key %d\n", key);
-  wolf(mlx);
+  // render_wolf(mlx);
   return (0);
 }

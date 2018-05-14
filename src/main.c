@@ -95,7 +95,7 @@ t_mlx 	*init_mlx(char *str)
 }
 
 
-void wolf(t_mlx *mlx)
+void render_wolf(t_mlx *mlx)
 {
 	int **worldMap;
 	worldMap = map();
@@ -218,14 +218,17 @@ void wolf(t_mlx *mlx)
 				drawEnd = h - 1;
 
 			int color;
-			if (worldMap[mapx][mapy] == '1')
+			printf("wolrdMap[mapx][mapy] %d, %d, %d\n", mapx, mapy, worldMap[mapx][mapy]);
+			if (worldMap[mapx][mapy] == 1)
 				color = 0xFF0000;
-			else if (worldMap[mapx][mapy] == '2')
+			else if (worldMap[mapx][mapy] == 2)
 				color = 0x00FF00;
-			else if (worldMap[mapx][mapy] == '3')
+			else if (worldMap[mapx][mapy] == 3)
 				color = 0x0000FF;
-			else if (worldMap[mapx][mapy] == '4')
+			else if (worldMap[mapx][mapy] == 4)
 				color = 0xFFFFFF;
+			else if (worldMap[mapx][mapy] == 0)
+				color = 0xFFFF00;
 
 			if (side == 1)
 				color = color / 2;
@@ -236,7 +239,7 @@ void wolf(t_mlx *mlx)
 			while (k < drawEnd)
 			{
 				// printf("x %d drawStart %d drawEnd %d perpWallDist %f\n",x, k, drawEnd, perpWallDist);
-				draw_pixel(mlx, x , k++, 0xFF00000);
+				draw_pixel(mlx, x , k++, color);
 			}
 			x++;
 		}
@@ -268,7 +271,7 @@ int main()
 	t_mlx *mlx;
 	mlx = init_mlx("raycaster");
 
-	wolf(mlx);
+	render_wolf(mlx);
   //
 	// //  double posx = 22;
 	// //  double posy = 12;
