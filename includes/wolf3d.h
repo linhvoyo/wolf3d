@@ -16,8 +16,10 @@
 # include "libft.h"
 # include <math.h>
 # include <time.h>
-# define WIDTH 512
-# define HEIGHT 384
+# define WIDTH 640
+# define HEIGHT 480
+# define texWidth 64
+# define texHeight 64
 
 typedef struct s_wolf
 {
