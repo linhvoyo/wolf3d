@@ -14,6 +14,8 @@
 # define WOLF3D_H
 # include "mlx.h"
 # include "libft.h"
+# include <math.h>
+# include <time.h>
 # define WIDTH 512
 # define HEIGHT 384
 
@@ -23,6 +25,9 @@ typedef struct s_wolf
     double diry;
     double posy;
     double posx;
+    double planex;
+    double planey;
+    int **worldMap;
 }               t_wolf;
 
 typedef struct s_mlx
@@ -35,9 +40,13 @@ typedef struct s_mlx
   int stride;
   int endian;
   t_wolf   *wolf;
+  clock_t last_frame;
+  clock_t next_frame;
 
 }               t_mlx;
 
 int keys(int key, t_mlx *mlx);
+void render_wolf(t_mlx *mlx);
+int loop_hook(t_mlx *mlx);
 
 #endif
