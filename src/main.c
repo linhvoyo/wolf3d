@@ -13,6 +13,7 @@
 #include "wolf3d.h"
 #include <stdio.h>
 #include <math.h>
+#include <fcntl.h>
 #define mapWidth 24
 #define mapHeight 24
 
@@ -151,6 +152,9 @@ void render_wolf(t_mlx *mlx)
 
 
 	// loadImage(tex_arr[0], texWidth , texHeight, "barrel.png");
+
+	// tex_arr[5] = mlx_xpm_to_image(mlx->mlx_ptr, &xpm, &width, &height);
+
 	while (i < texWidth)
 	{
 		j = 0;
