@@ -14,83 +14,6 @@
 #include <stdio.h>
 #include <math.h>
 #include <fcntl.h>
-#define mapWidth 24
-#define mapHeight 24
-
-// int 	**map()
-// {
-// 	// int map_test[24][24] = {
-// 	// 	{1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1},
-// 	// 	{1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1},
-// 	// 	{1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1},
-// 	// 	{1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1},
-// 	// 	{1,0,0,0,0,0,2,2,2,2,2,0,0,0,0,3,0,3,0,3,0,0,0,1},
-// 	// 	{1,0,0,0,0,0,2,0,0,0,2,0,0,0,0,0,0,0,0,0,0,0,0,1},
-// 	// 	{1,0,0,0,0,0,2,0,0,0,2,0,0,0,0,3,0,0,0,3,0,0,0,1},
-// 	// 	{1,0,0,0,0,0,2,0,0,0,2,0,0,0,0,0,0,0,0,0,0,0,0,1},
-// 	// 	{1,0,0,0,0,0,2,2,0,2,2,0,0,0,0,3,0,3,0,3,0,0,0,1},
-// 	// 	{1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1},
-// 	// 	{1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1},
-// 	// 	{1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1},
-// 	// 	{1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1},
-// 	// 	{1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1},
-// 	// 	{1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1},
-// 	// 	{1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1},
-// 	// 	{1,4,4,4,4,4,4,4,4,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1},
-// 	// 	{1,4,0,4,0,0,0,0,4,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1},
-// 	// 	{1,4,0,0,0,0,5,0,4,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1},
-// 	// 	{1,4,0,4,0,0,0,0,4,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1},
-// 	// 	{1,4,0,4,4,4,4,4,4,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1},
-// 	// 	{1,4,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1},
-// 	// 	{1,4,4,4,4,4,4,4,4,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1},
-// 	// 	{1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1}};
-//
-// 	int map_test[mapWidth][mapHeight]={
-//   {4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,7,7,7,7,7,7,7,7},
-//   {4,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,7,0,0,0,0,0,0,7},
-//   {4,0,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,7},
-//   {4,0,2,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,7},
-//   {4,0,3,0,0,0,0,0,0,0,0,0,0,0,0,0,7,0,0,0,0,0,0,7},
-//   {4,0,4,0,0,0,0,5,5,5,5,5,5,5,5,5,7,7,0,7,7,7,7,7},
-//   {4,0,5,0,0,0,0,5,0,5,0,5,0,5,0,5,7,0,0,0,7,7,7,1},
-//   {4,0,6,0,0,0,0,5,0,0,0,0,0,0,0,5,7,0,0,0,0,0,0,8},
-//   {4,0,7,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,7,7,7,1},
-//   {4,0,8,0,0,0,0,5,0,0,0,0,0,0,0,5,7,0,0,0,0,0,0,8},
-//   {4,0,0,0,0,0,0,5,0,0,0,0,0,0,0,5,7,0,0,0,7,7,7,1},
-//   {4,0,0,0,0,0,0,5,5,5,5,0,5,5,5,5,7,7,7,7,7,7,7,1},
-//   {6,6,6,6,6,6,6,6,6,6,6,0,6,6,6,6,6,6,6,6,6,6,6,6},
-//   {8,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,4},
-//   {6,6,6,6,6,6,0,6,6,6,6,0,6,6,6,6,6,6,6,6,6,6,6,6},
-//   {4,4,4,4,4,4,0,4,4,4,6,0,6,2,2,2,2,2,2,2,3,3,3,3},
-//   {4,0,0,0,0,0,0,0,0,4,6,0,6,2,0,0,0,0,0,2,0,0,0,2},
-//   {4,0,0,0,0,0,0,0,0,0,0,0,6,2,0,0,5,0,0,2,0,0,0,2},
-//   {4,0,0,0,0,0,0,0,0,4,6,0,6,2,0,0,0,0,0,2,2,0,2,2},
-//   {4,0,6,0,6,0,0,0,0,4,6,0,0,0,0,0,5,0,0,0,0,0,0,2},
-//   {4,0,0,5,0,0,0,0,0,4,6,0,6,2,0,0,0,0,0,2,2,0,2,2},
-//   {4,0,6,0,6,0,0,0,0,4,6,0,6,2,0,0,5,0,0,2,0,0,0,2},
-//   {4,0,0,0,0,0,0,0,0,4,6,0,6,2,0,0,0,0,0,2,0,0,0,2},
-//   {4,4,4,4,4,4,4,4,4,4,1,1,1,2,2,2,2,2,2,3,3,3,3,3}};
-//
-// 		int **map;
-//
-// 		map = malloc(sizeof(int*) * mapHeight);
-//
-// 		int i;
-// 		i = 0;
-// 		int j;
-// 		while (i < mapHeight)
-// 		{
-// 			j = 0;
-// 			map[i] = malloc(sizeof(int) * mapWidth);
-// 			while (j < mapWidth)
-// 			{
-// 				map[i][j] = map_test[i][j];
-// 				j++;
-// 			}
-// 			i++;
-// 		}
-// 	return map;
-// }
 
 
 void 	draw_pixel(t_mlx *mlx, int x, int y, int color)
@@ -111,8 +34,6 @@ t_mlx 	*init_mlx(char *str)
 	tmp->img = mlx_new_image(tmp->mlx_ptr, WIDTH, HEIGHT);
 	tmp->img_ptr = (int *)mlx_get_data_addr(tmp->img, &tmp->bbp, &tmp->stride, &tmp->endian);
 	tmp->bbp /= 8;
-	// tmp->last_frame = clock();
-	// tmp->next_frame = 0;
 	if (!(tmp->wolf = malloc(sizeof(t_wolf))))
 		return (NULL);
 	tmp->wolf->posx = 22;
@@ -121,7 +42,6 @@ t_mlx 	*init_mlx(char *str)
 	tmp->wolf->diry = 0;
 	tmp->wolf->planex = 0;
 	tmp->wolf->planey = 0.66;
-	// tmp->wolf->worldMap = process_map();
 	if (!(tmp->map = malloc(sizeof(t_map))))
 		return (NULL);
 	tmp->map->mw = 0;
@@ -144,10 +64,6 @@ void render_wolf(t_mlx *mlx)
 	i = 0;
 	int j;
 
-
-	// loadImage(tex_arr[0], texWidth , texHeight, "barrel.png");
-
-	// tex_arr[5] = mlx_xpm_to_image(mlx->mlx_ptr, &xpm, &width, &height);
 
 	while (i < texWidth)
 	{
@@ -176,8 +92,6 @@ void render_wolf(t_mlx *mlx)
 	printf("posx %f poxy %f dirx %f diry %f\n", posx, posy, dirx, diry);
 	double planex = mlx->wolf->planex;
 	double planey = mlx->wolf->planey;
-
-
 
 	int buffer[HEIGHT][WIDTH];
 
@@ -276,26 +190,6 @@ void render_wolf(t_mlx *mlx)
 		if (drawEnd >= HEIGHT)
 			drawEnd = HEIGHT - 1;
 
-		// int color;
-		// // printf("wolrdMap[mapx][mapy] %d, %d, %d\n", mapx, mapy, mlx->wolf->worldMap[mapx][mapy]);
-		// if (mlx->wolf->worldMap[mapx][mapy] == 1)
-		// 	color = 0xFF0000; //red
-		// else if (mlx->wolf->worldMap[mapx][mapy] == 2)
-		// 	color = 0x00FF00; //green
-		// else if (mlx->wolf->worldMap[mapx][mapy] == 3)
-		// 	color = 0x0000FF; //blue
-		// else if (mlx->wolf->worldMap[mapx][mapy] == 4)
-		// 	color = 0xFFFFFF; //white
-		// else if (mlx->wolf->worldMap[mapx][mapy] == 0)
-		// 	color = 0xFFFF00; //yellow
-
-		// if (side == 1)
-		// 	color = color / 2;
-
-		// while (drawStart < drawEnd)
-		// 	draw_pixel(mlx, x , drawStart++, color);
-
-
 		int texNum = mlx->wolf->worldMap[mapx][mapy] - 1;
 		double wallx;
 		if (side == 0)
@@ -322,11 +216,6 @@ void render_wolf(t_mlx *mlx)
 		}
 		x++;
 		}
-
-		// oldtime = time;
-		// time = clock();
-		// double frameTime = (time - oldtime) / 1000;
-		// printf("fps %f\n", frameTime);
 		mlx_put_image_to_window(mlx->mlx_ptr, mlx->win_ptr, mlx->img, 0, 0);
 }
 
@@ -335,10 +224,7 @@ int main(int argc, char **argv)
 	t_mlx *mlx;
 	int	fd;
 
-	// mlx = init_mlx("raycaster");
-	fd = open(argv[1], O_RDONLY);
-
-	read_file(fd, (mlx=init_mlx("raycaster")));
+	read_file((fd = open(argv[1], O_RDONLY)), (mlx=init_mlx("raycaster")));
 	mlx->wolf->worldMap = process_map((fd = open(argv[1], O_RDONLY)), mlx);
 
 	render_wolf(mlx);
