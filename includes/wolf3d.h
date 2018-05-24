@@ -32,6 +32,14 @@ typedef struct s_wolf
     int **worldMap;
 }               t_wolf;
 
+
+typedef struct s_map
+{
+  int mw;
+  int mh;
+  int commas;
+}             t_map;
+
 typedef struct s_mlx
 {
   void *mlx_ptr;
@@ -42,13 +50,16 @@ typedef struct s_mlx
   int stride;
   int endian;
   t_wolf   *wolf;
-  clock_t last_frame;
-  clock_t next_frame;
+  t_map     *map;
+  // clock_t last_frame;
+  // clock_t next_frame;
 
 }               t_mlx;
 
 int keys(int key, t_mlx *mlx);
 void render_wolf(t_mlx *mlx);
-int loop_hook(t_mlx *mlx);
+void read_file(int fd, t_mlx *mlx);
+int **process_map(int fd, t_mlx *mlx);
+// int loop_hook(t_mlx *mlx);
 
 #endif

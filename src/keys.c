@@ -46,20 +46,20 @@ int keys(int key, t_mlx *mlx)
   return (0);
 }
 
-int loop_hook(t_mlx *mlx)
-{
-
-    // printf("current_frame fps %lu\n", mlx->last_frame - mlx->next_frame);
-    // mlx->next_frame = mlx->last_frame;
-    mlx->last_frame = clock();
-    if (mlx->next_frame > mlx->last_frame)
-        return (0);
-    // printf("current_frame fps %lu\n", mlx->next_frame - mlx->last_frame);
-    mlx->next_frame = mlx->last_frame + (CLOCKS_PER_SEC / 1000);
-    // printf("next_frame fps %lu\n", mlx->next_frame);
-    // printf("last_frame fps %lu\n", mlx->last_frame);
-    printf("current_frame fps %lu\n", mlx->next_frame - mlx->last_frame);
-    // mlx->next_frame = mlx->last_frame + (CLOCKS_PER_SEC / 100000);
-    // render_wolf(mlx);
-    return (0);
-}
+// int loop_hook(t_mlx *mlx)
+// {
+//
+//     // printf("current_frame fps %lu\n", mlx->last_frame - mlx->next_frame);
+//     // mlx->next_frame = mlx->last_frame;
+//     mlx->last_frame = clock();
+//     if (mlx->next_frame > mlx->last_frame)
+//         return (0);
+//     // printf("current_frame fps %lu\n", mlx->next_frame - mlx->last_frame);
+//     mlx->next_frame = mlx->last_frame + (CLOCKS_PER_SEC / 1000);
+//     // printf("next_frame fps %lu\n", mlx->next_frame);
+//     // printf("last_frame fps %lu\n", mlx->last_frame);
+//     printf("current_frame fps %lu\n", mlx->next_frame - mlx->last_frame);
+//     // mlx->next_frame = mlx->last_frame + (CLOCKS_PER_SEC / 100000);
+//     // render_wolf(mlx);
+//     return (0);
+// }
