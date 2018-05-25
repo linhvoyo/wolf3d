@@ -23,6 +23,43 @@ void 	draw_pixel(t_mlx *mlx, int x, int y, int color)
 	mlx->img_ptr[i] = color;
 }
 
+int **generate_textures()
+{
+	int **arr;
+	int i = 0;
+	int j = 0;
+	int x_color;
+	int y_color;
+	int xy_color;
+
+	if (!(arr = malloc(sizeof(int*) * 8)))
+		return (NULL);
+	while (i < 8)
+		arr[i++] = malloc(sizeof(int) * texWidth * texHeight);
+	i = 0;
+	while (i < texWidth)
+	{
+		j = 0;
+		while (j < texHeight)
+		{
+			x_color = (i * 256 / texWidth) ^ (j * 256 / texHeight);
+			y_color = j * 256 / texHeight;
+			xy_color = j * 128 / texHeight + i * 128 / texWidth;
+			arr[0][texWidth * j + i] = 65536 * 254 * (i != j && i != texWidth - j);
+			arr[1][texWidth * j + i] = xy_color + 256 * xy_color + 65536 * xy_color;
+			arr[2][texWidth * j + i] = 256 * xy_color + 65536 * xy_color;
+			arr[3][texWidth * j + i] = x_color + 256 * x_color + 65536 * x_color;
+			arr[4][texWidth * j + i] = 256 * x_color;
+			arr[5][texWidth * j + i] = 65536 * 192 * (i % 16 && j % 16);
+			arr[6][texWidth * j + i] = 65536 * y_color;
+			arr[7][texWidth * j + i] = 128 + 256 * 128 + 65536 * 128;
+			j++;
+		}
+		i++;
+	}
+	return arr;
+}
+
 t_mlx 	*init_mlx(char *str)
 {
 	t_mlx *tmp;
@@ -42,6 +79,7 @@ t_mlx 	*init_mlx(char *str)
 	tmp->wolf->diry = 0;
 	tmp->wolf->planex = 0;
 	tmp->wolf->planey = 0.66;
+	tmp->wolf->textures = generate_textures();
 	if (!(tmp->map = malloc(sizeof(t_map))))
 		return (NULL);
 	tmp->map->mw = 0;
@@ -49,67 +87,32 @@ t_mlx 	*init_mlx(char *str)
 	return tmp;
 }
 
+
 void render_wolf(t_mlx *mlx)
 {
 	ft_bzero(mlx->img_ptr, WIDTH * HEIGHT * mlx->bbp);
-	double posx = mlx->wolf->posx;
-	double posy = mlx->wolf->posy;
-	double dirx = mlx->wolf->dirx;
-	double diry = mlx->wolf->diry;
 
+	printf("posx %f poxy %f dirx %f diry %f\n", mlx->wolf->posx,
+	mlx->wolf->posy, mlx->wolf->dirx, mlx->wolf->diry);
 
+	// double planex = mlx->wolf->planex;
+	// double planey = mlx->wolf->planey;
 
-	int tex_arr[8][texWidth * texHeight];
-	int i;
-	i = 0;
-	int j;
-
-
-	while (i < texWidth)
-	{
-		j = 0;
-		while (j < texHeight)
-		{
-			int xorcolor = (i * 256 /texWidth) ^ (j * 256 / texHeight);
-			int ycolor = j * 256 / texHeight;
-			int xycolor = j * 128 / texHeight + i * 128 / texWidth;
-			tex_arr[0][texWidth * j + i] = 65536 * 254 * (i != j && i != texWidth - j);
-			tex_arr[1][texWidth * j + i] = xycolor + 256 * xycolor + 65536 * xycolor;
-			tex_arr[2][texWidth * j + i] = 256 * xycolor + 65536 * xycolor;
-			tex_arr[3][texWidth * j + i] = xorcolor + 256 * xorcolor + 65536 * xorcolor;
-			tex_arr[4][texWidth * j + i] = 256 * xorcolor;
-			tex_arr[5][texWidth * j + i] = 65536 * 192 * (i % 16 && j % 16);
-			tex_arr[6][texWidth * j + i] = 65536 * ycolor;
-			tex_arr[7][texWidth * j + i] = 128 + 256 * 128 + 65536 * 128;
-			j++;
-		}
-		i++;
-	}
-
-
-
-
-	printf("posx %f poxy %f dirx %f diry %f\n", posx, posy, dirx, diry);
-	double planex = mlx->wolf->planex;
-	double planey = mlx->wolf->planey;
-
-	int buffer[HEIGHT][WIDTH];
 
 	//ray casting loop
 	double camerax;
-	double rayx;
-	double rayy;
 	int x = 0;
 	while (x < WIDTH)
 	{
 		//calculate ray position and direction
+		//calculate ray position given direction vector
 		camerax = 2 * x / (double)WIDTH - 1;
-		rayx = dirx + planex * camerax;
-		rayy = diry + planey * camerax;
+		mlx->wolf->rayx = mlx->wolf->dirx + mlx->wolf->planex * camerax;
+		mlx->wolf->rayy = mlx->wolf->diry + mlx->wolf->planey * camerax;
 
 		//which box of the map we're in
-		int mapx = posx;
-		int mapy = posy;
+		int mapx = mlx->wolf->posx;
+		int mapy = mlx->wolf->posy;
 
 		//lenght of ray from current position to the next x or y-side
 		double sideDistX;
@@ -117,8 +120,8 @@ void render_wolf(t_mlx *mlx)
 
 		// length of ray from one x to another x-side
 		// length of ray from one y to another y-side
-		double deltaDistX = fabs(1/ rayx);
-		double deltaDistY = fabs(1/ rayy);
+		double deltaDistX = fabs(1 / mlx->wolf->rayx);
+		double deltaDistY = fabs(1 / mlx->wolf->rayy);
 		double perpWallDist;
 
 		//what direction to step in , x or y direction (either +1 or -1)
@@ -129,25 +132,25 @@ void render_wolf(t_mlx *mlx)
 		int side; //was a NS or a EW wall hit?;
 
 		//calculate step and initial sideDist
-		if (rayx < 0)
+		if (mlx->wolf->rayx < 0)
 		{
 			stepx = -1;
-			sideDistX = (posx - mapx) * deltaDistX;
+			sideDistX = (mlx->wolf->posx - mapx) * deltaDistX;
 		}
 		else
 		{
 			stepx = 1;
-			sideDistX = (mapx + 1.0 - posx) * deltaDistX;
+			sideDistX = (mapx + 1.0 - mlx->wolf->posx) * deltaDistX;
 		}
-		if (rayy < 0)
+		if (mlx->wolf->rayy < 0)
 		{
 			stepy = -1;
-			sideDistY = (posy - mapy) * deltaDistY;
+			sideDistY = (mlx->wolf->posy - mapy) * deltaDistY;
 		}
 		else
 		{
 			stepy = 1;
-			sideDistY = (mapy + 1.0 - posy) * deltaDistY;
+			sideDistY = (mapy + 1.0 - mlx->wolf->posy) * deltaDistY;
 		}
 
 		//perform DDA
@@ -173,9 +176,9 @@ void render_wolf(t_mlx *mlx)
 
 		//Calculate distance projected on camera direction
 		if (side == 0)
-			perpWallDist = (mapx - posx + (1 - stepx) / 2) / rayx;
+			perpWallDist = (mapx - mlx->wolf->posx + (1 - stepx) / 2) / mlx->wolf->rayx;
 		else
-			perpWallDist = (mapy - posy + (1 - stepy) / 2) / rayy;
+			perpWallDist = (mapy - mlx->wolf->posy + (1 - stepy) / 2) / mlx->wolf->rayy;
 
 		//Calculate height of line draw on screen
 		// h = the height in pixels of the screen, to bring it to pixel coordinates.
@@ -193,25 +196,24 @@ void render_wolf(t_mlx *mlx)
 		int texNum = mlx->wolf->worldMap[mapx][mapy] - 1;
 		double wallx;
 		if (side == 0)
-			wallx = posy + perpWallDist * rayy;
+			wallx = mlx->wolf->posy + perpWallDist * mlx->wolf->rayy;
 		else
-			wallx = posx + perpWallDist * rayx;
+			wallx = mlx->wolf->posx + perpWallDist * mlx->wolf->rayx;
 		wallx = wallx - floor((wallx));
 
 		int texx = (int)(wallx * (double)texWidth);
-		if (side == 0 && rayx > 0)
+		if (side == 0 && mlx->wolf->rayx > 0)
 			texx = texWidth - texx - 1;
-		if (side == 1 && rayy < 0)
+		if (side == 1 && mlx->wolf->rayy < 0)
 			texx = texWidth - texx - 1;
 
 		while (drawStart < drawEnd)
 		{
 			int d = drawStart * 256 - HEIGHT * 128 + lineHeight * 128;
 			int texy = ((d * texHeight) / lineHeight) / 256;
-			int color = tex_arr[texNum][texHeight * texy + texx];
+			int color = mlx->wolf->textures[texNum][texHeight * texy + texx];
 			if (side == 1)
 				color = (color >> 1) & 8355711;
-			// buffer[drawStart++][x] = color;
 			draw_pixel(mlx, x, drawStart++, color);
 		}
 		x++;
@@ -219,12 +221,20 @@ void render_wolf(t_mlx *mlx)
 		mlx_put_image_to_window(mlx->mlx_ptr, mlx->win_ptr, mlx->img, 0, 0);
 }
 
+
+
+
+
 int main(int argc, char **argv)
 {
 	t_mlx *mlx;
 	int	fd;
+	// int textures[8][texWidth * texHeight];
 
-	read_file((fd = open(argv[1], O_RDONLY)), (mlx=init_mlx("raycaster")));
+	// generate_texture(textures);
+	// printf("%d", textures[1][4]);
+
+	read_file((fd = open(argv[1], O_RDONLY)), (mlx = init_mlx("raycaster")));
 	mlx->wolf->worldMap = process_map((fd = open(argv[1], O_RDONLY)), mlx);
 
 	render_wolf(mlx);

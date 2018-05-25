@@ -21,7 +21,7 @@ int validate_line(char *str, int map_width, int map_height)
       count++;
     i++;
   }
-  if (i != map_width || str[0] == '0' || str[i - 1] == '0')
+  if (i != map_width || str[0] == '0' || str[i - 1] == '0' || str[i-1] == ',')
     exit(1);
   return count;
 }
