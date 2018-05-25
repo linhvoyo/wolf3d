@@ -31,6 +31,8 @@ typedef struct s_wolf
     double planey;
     double rayx;
     double rayy;
+    int mapx;
+    int mapy;
     int **worldMap;
     int **textures;
 }               t_wolf;

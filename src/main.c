@@ -87,6 +87,20 @@ t_mlx 	*init_mlx(char *str)
 	return tmp;
 }
 
+void calculate_ray(t_mlx *mlx, int x)
+{
+	//calculate ray position given direction vector
+	double camerax;
+	
+	camerax = 2 * x / (double)WIDTH - 1;
+	mlx->wolf->rayx = mlx->wolf->dirx + mlx->wolf->planex * camerax;
+	mlx->wolf->rayy = mlx->wolf->diry + mlx->wolf->planey * camerax;
+}
+
+// void calculate_step_sidedist(t_mlx *mlx, int x)
+// {
+
+// }
 
 void render_wolf(t_mlx *mlx)
 {
@@ -95,24 +109,16 @@ void render_wolf(t_mlx *mlx)
 	printf("posx %f poxy %f dirx %f diry %f\n", mlx->wolf->posx,
 	mlx->wolf->posy, mlx->wolf->dirx, mlx->wolf->diry);
 
-	// double planex = mlx->wolf->planex;
-	// double planey = mlx->wolf->planey;
-
 
 	//ray casting loop
-	double camerax;
+
 	int x = 0;
 	while (x < WIDTH)
 	{
-		//calculate ray position and direction
-		//calculate ray position given direction vector
-		camerax = 2 * x / (double)WIDTH - 1;
-		mlx->wolf->rayx = mlx->wolf->dirx + mlx->wolf->planex * camerax;
-		mlx->wolf->rayy = mlx->wolf->diry + mlx->wolf->planey * camerax;
-
+		calculate_ray(mlx, x);
 		//which box of the map we're in
-		int mapx = mlx->wolf->posx;
-		int mapy = mlx->wolf->posy;
+		mlx->wolf->mapx = mlx->wolf->posx;
+		mlx->wolf->mapy = mlx->wolf->posy;
 
 		//lenght of ray from current position to the next x or y-side
 		double sideDistX;
@@ -135,22 +141,22 @@ void render_wolf(t_mlx *mlx)
 		if (mlx->wolf->rayx < 0)
 		{
 			stepx = -1;
-			sideDistX = (mlx->wolf->posx - mapx) * deltaDistX;
+			sideDistX = (mlx->wolf->posx - mlx->wolf->mapx) * deltaDistX;
 		}
 		else
 		{
 			stepx = 1;
-			sideDistX = (mapx + 1.0 - mlx->wolf->posx) * deltaDistX;
+			sideDistX = (mlx->wolf->mapx + 1.0 - mlx->wolf->posx) * deltaDistX;
 		}
 		if (mlx->wolf->rayy < 0)
 		{
 			stepy = -1;
-			sideDistY = (mlx->wolf->posy - mapy) * deltaDistY;
+			sideDistY = (mlx->wolf->posy - mlx->wolf->mapy) * deltaDistY;
 		}
 		else
 		{
 			stepy = 1;
-			sideDistY = (mapy + 1.0 - mlx->wolf->posy) * deltaDistY;
+			sideDistY = (mlx->wolf->mapy + 1.0 - mlx->wolf->posy) * deltaDistY;
 		}
 
 		//perform DDA
@@ -160,25 +166,25 @@ void render_wolf(t_mlx *mlx)
 			if (sideDistX < sideDistY)
 			{
 				sideDistX += deltaDistX;
-				mapx += stepx;
+				mlx->wolf->mapx += stepx;
 				side = 0;
 			}
 			else
 			{
 				sideDistY += deltaDistY;
-				mapy += stepy;
+				mlx->wolf->mapy += stepy;
 				side = 1;
 			}
 			//Check if ray has hit a wall
-			if (mlx->wolf->worldMap[mapx][mapy] > 0)
+			if (mlx->wolf->worldMap[mlx->wolf->mapx][mlx->wolf->mapy] > 0)
 				hit = 1;
 		}
 
 		//Calculate distance projected on camera direction
 		if (side == 0)
-			perpWallDist = (mapx - mlx->wolf->posx + (1 - stepx) / 2) / mlx->wolf->rayx;
+			perpWallDist = (mlx->wolf->mapx - mlx->wolf->posx + (1 - stepx) / 2) / mlx->wolf->rayx;
 		else
-			perpWallDist = (mapy - mlx->wolf->posy + (1 - stepy) / 2) / mlx->wolf->rayy;
+			perpWallDist = (mlx->wolf->mapy - mlx->wolf->posy + (1 - stepy) / 2) / mlx->wolf->rayy;
 
 		//Calculate height of line draw on screen
 		// h = the height in pixels of the screen, to bring it to pixel coordinates.
@@ -193,7 +199,7 @@ void render_wolf(t_mlx *mlx)
 		if (drawEnd >= HEIGHT)
 			drawEnd = HEIGHT - 1;
 
-		int texNum = mlx->wolf->worldMap[mapx][mapy] - 1;
+		int texNum = mlx->wolf->worldMap[mlx->wolf->mapx][mlx->wolf->mapy] - 1;
 		double wallx;
 		if (side == 0)
 			wallx = mlx->wolf->posy + perpWallDist * mlx->wolf->rayy;
