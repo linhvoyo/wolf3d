@@ -23,16 +23,34 @@
 
 typedef struct s_wolf
 {
+    //direction vector
     double dirx;
     double diry;
+    //player position
     double posy;
     double posx;
+    //plance vector
     double planex;
     double planey;
     double rayx;
     double rayy;
+    //lenght of ray from current position to the next x or y
+    double distx;
+    double disty;
+    //lenght of ray from one x/y to the other
+    double delta_distx;
+    double delta_disty;
+    //total lenght of the ray
+    double per_wall_dist;
+    //direction in x or y: values are -1 or 1
+    int stepx;
+    int stepy;
+    //map position
     int mapx;
     int mapy;
+    //hit ends dda loop if hit == 1
+    int hit;
+    int side;
     int **worldMap;
     int **textures;
 }               t_wolf;

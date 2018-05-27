@@ -97,10 +97,103 @@ void calculate_ray(t_mlx *mlx, int x)
 	mlx->wolf->rayy = mlx->wolf->diry + mlx->wolf->planey * camerax;
 }
 
-// void calculate_step_sidedist(t_mlx *mlx, int x)
-// {
+void calculate_step_sidedist(t_mlx *mlx, int x)
+{
+	//initialize mapx and mapy
+	//determine box we're in
+	mlx->wolf->mapx = mlx->wolf->posx;
+	mlx->wolf->mapy = mlx->wolf->posy;
 
-// }
+	//llenght of ray from one x/y to another;
+	//equation is simplify from:
+	//delta_distx = sqrt(1 + (rayy * rayy)/(rayx *rayx))
+	mlx->wolf->delta_distx = fabs(1 / mlx->wolf->rayx);
+	mlx->wolf->delta_disty = fabs(1 / mlx->wolf->rayy);
+
+	//initilize dda
+	mlx->wolf->hit = 0;
+	
+	//calculate step and intial sideDisT
+	//x
+	if (mlx->wolf->rayx < 0 && (mlx->wolf->stepx = -1))
+		mlx->wolf->distx = (mlx->wolf->posx - mlx->wolf->mapx) * mlx->wolf->delta_distx;
+	else if ((mlx->wolf->stepx = 1))
+		mlx->wolf->distx = (mlx->wolf->mapx + 1.0 - mlx->wolf->posx) * mlx->wolf->delta_distx;
+	//y
+	if (mlx->wolf->rayy < 0 && (mlx->wolf->stepy = -1))
+		mlx->wolf->disty = (mlx->wolf->posy - mlx->wolf->mapy) * mlx->wolf->delta_disty;
+	else if ((mlx->wolf->stepy = 1))
+		mlx->wolf->disty = (mlx->wolf->mapy + 1.0 - mlx->wolf->posy) * mlx->wolf->delta_disty;
+
+}
+
+void dda(t_mlx *mlx, int x)
+{
+	//perform DDA
+	while (mlx->wolf->hit == 0)
+	{
+		//jump to next map sqaure, or in direction of x or y
+		if (mlx->wolf->distx < mlx->wolf->disty)
+		{
+			mlx->wolf->distx += mlx->wolf->delta_distx;
+			mlx->wolf->mapx += mlx->wolf->stepx;
+			mlx->wolf->side = 0;
+		}
+		else
+		{
+			mlx->wolf->disty += mlx->wolf->delta_disty;
+			mlx->wolf->mapy += mlx->wolf->stepy;
+			mlx->wolf->side = 1;
+		}
+		//Check if ray has hit a wall
+		if (mlx->wolf->worldMap[mlx->wolf->mapx][mlx->wolf->mapy] > 0)
+			mlx->wolf->hit= 1;
+	}
+	
+	//Calculate distance projected on camera direction
+	if (mlx->wolf->side == 0)
+		mlx->wolf->per_wall_dist = (mlx->wolf->mapx - mlx->wolf->posx + (1 - mlx->wolf->stepx) / 2) / mlx->wolf->rayx;
+	else
+		mlx->wolf->per_wall_dist = (mlx->wolf->mapy - mlx->wolf->posy + (1 - mlx->wolf->stepy) / 2) / mlx->wolf->rayy;
+}
+
+void draw_world(t_mlx *mlx, int x)
+{
+	//Calculate height of line draw on screen=
+	int lineHeight = (int)(HEIGHT / mlx->wolf->per_wall_dist);
+
+	//Calculate lowest and highest pixel to fill in current stripe
+	int drawStart = -lineHeight / 2 + HEIGHT / 2;
+	if (drawStart < 0)
+		drawStart = 0;
+	int drawEnd = lineHeight / 2 + HEIGHT / 2;
+	if (drawEnd >= HEIGHT)
+		drawEnd = HEIGHT - 1;
+		
+	int texNum = mlx->wolf->worldMap[mlx->wolf->mapx][mlx->wolf->mapy] - 1;
+	double wallx;
+	if (mlx->wolf->side == 0)
+		wallx = mlx->wolf->posy + mlx->wolf->per_wall_dist * mlx->wolf->rayy;
+	else
+		wallx = mlx->wolf->posx + mlx->wolf->per_wall_dist * mlx->wolf->rayx;
+	wallx = wallx - floor((wallx));
+
+	int texx = (int)(wallx * (double)texWidth);
+	if (mlx->wolf->side == 0 && mlx->wolf->rayx > 0)
+		texx = texWidth - texx - 1;
+	if (mlx->wolf->side == 1 && mlx->wolf->rayy < 0)
+		texx = texWidth - texx - 1;
+
+	while (drawStart < drawEnd)
+	{
+		int d = drawStart * 256 - HEIGHT * 128 + lineHeight * 128;
+		int texy = ((d * texHeight) / lineHeight) / 256;
+		int color = mlx->wolf->textures[texNum][texHeight * texy + texx];
+		if (mlx->wolf->side == 1)
+			color = (color >> 1) & 8355711;
+		draw_pixel(mlx, x, drawStart++, color);
+	}
+}
 
 void render_wolf(t_mlx *mlx)
 {
@@ -111,120 +204,16 @@ void render_wolf(t_mlx *mlx)
 
 
 	//ray casting loop
-
 	int x = 0;
 	while (x < WIDTH)
 	{
 		calculate_ray(mlx, x);
-		//which box of the map we're in
-		mlx->wolf->mapx = mlx->wolf->posx;
-		mlx->wolf->mapy = mlx->wolf->posy;
-
-		//lenght of ray from current position to the next x or y-side
-		double sideDistX;
-		double sideDistY;
-
-		// length of ray from one x to another x-side
-		// length of ray from one y to another y-side
-		double deltaDistX = fabs(1 / mlx->wolf->rayx);
-		double deltaDistY = fabs(1 / mlx->wolf->rayy);
-		double perpWallDist;
-
-		//what direction to step in , x or y direction (either +1 or -1)
-		int stepx;
-		int stepy;
-
-		int hit = 0; //was there a wall hit?
-		int side; //was a NS or a EW wall hit?;
-
-		//calculate step and initial sideDist
-		if (mlx->wolf->rayx < 0)
-		{
-			stepx = -1;
-			sideDistX = (mlx->wolf->posx - mlx->wolf->mapx) * deltaDistX;
-		}
-		else
-		{
-			stepx = 1;
-			sideDistX = (mlx->wolf->mapx + 1.0 - mlx->wolf->posx) * deltaDistX;
-		}
-		if (mlx->wolf->rayy < 0)
-		{
-			stepy = -1;
-			sideDistY = (mlx->wolf->posy - mlx->wolf->mapy) * deltaDistY;
-		}
-		else
-		{
-			stepy = 1;
-			sideDistY = (mlx->wolf->mapy + 1.0 - mlx->wolf->posy) * deltaDistY;
-		}
-
-		//perform DDA
-		while (hit == 0)
-		{
-			//jump to next map sqaure, or in direction of x or y
-			if (sideDistX < sideDistY)
-			{
-				sideDistX += deltaDistX;
-				mlx->wolf->mapx += stepx;
-				side = 0;
-			}
-			else
-			{
-				sideDistY += deltaDistY;
-				mlx->wolf->mapy += stepy;
-				side = 1;
-			}
-			//Check if ray has hit a wall
-			if (mlx->wolf->worldMap[mlx->wolf->mapx][mlx->wolf->mapy] > 0)
-				hit = 1;
-		}
-
-		//Calculate distance projected on camera direction
-		if (side == 0)
-			perpWallDist = (mlx->wolf->mapx - mlx->wolf->posx + (1 - stepx) / 2) / mlx->wolf->rayx;
-		else
-			perpWallDist = (mlx->wolf->mapy - mlx->wolf->posy + (1 - stepy) / 2) / mlx->wolf->rayy;
-
-		//Calculate height of line draw on screen
-		// h = the height in pixels of the screen, to bring it to pixel coordinates.
-
-		int lineHeight = (int)(HEIGHT / perpWallDist);
-
-		//calculate lowest and highest pixel to fill in current stripe
-		int drawStart = -lineHeight / 2 + HEIGHT / 2;
-		if (drawStart < 0)
-			drawStart = 0;
-		int drawEnd = lineHeight / 2 + HEIGHT / 2;
-		if (drawEnd >= HEIGHT)
-			drawEnd = HEIGHT - 1;
-
-		int texNum = mlx->wolf->worldMap[mlx->wolf->mapx][mlx->wolf->mapy] - 1;
-		double wallx;
-		if (side == 0)
-			wallx = mlx->wolf->posy + perpWallDist * mlx->wolf->rayy;
-		else
-			wallx = mlx->wolf->posx + perpWallDist * mlx->wolf->rayx;
-		wallx = wallx - floor((wallx));
-
-		int texx = (int)(wallx * (double)texWidth);
-		if (side == 0 && mlx->wolf->rayx > 0)
-			texx = texWidth - texx - 1;
-		if (side == 1 && mlx->wolf->rayy < 0)
-			texx = texWidth - texx - 1;
-
-		while (drawStart < drawEnd)
-		{
-			int d = drawStart * 256 - HEIGHT * 128 + lineHeight * 128;
-			int texy = ((d * texHeight) / lineHeight) / 256;
-			int color = mlx->wolf->textures[texNum][texHeight * texy + texx];
-			if (side == 1)
-				color = (color >> 1) & 8355711;
-			draw_pixel(mlx, x, drawStart++, color);
-		}
+		calculate_step_sidedist(mlx, x);
+		dda(mlx, x);
+		draw_world(mlx, x);
 		x++;
-		}
-		mlx_put_image_to_window(mlx->mlx_ptr, mlx->win_ptr, mlx->img, 0, 0);
+	}
+	mlx_put_image_to_window(mlx->mlx_ptr, mlx->win_ptr, mlx->img, 0, 0);
 }
 
 
