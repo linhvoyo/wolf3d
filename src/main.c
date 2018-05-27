@@ -80,6 +80,7 @@ t_mlx 	*init_mlx(char *str)
 	tmp->wolf->planex = 0;
 	tmp->wolf->planey = 0.66;
 	tmp->wolf->textures = generate_textures();
+	tmp->wolf->n_threads = 4;
 	if (!(tmp->map = malloc(sizeof(t_map))))
 		return (NULL);
 	tmp->map->mw = 0;
@@ -195,8 +196,10 @@ void draw_world(t_mlx *mlx, int x)
 	}
 }
 
+// void* render_wolf(void* img)
 void render_wolf(t_mlx *mlx)
 {
+	// t_mlx *mlx = (t_mlx *)img
 	ft_bzero(mlx->img_ptr, WIDTH * HEIGHT * mlx->bbp);
 
 	printf("posx %f poxy %f dirx %f diry %f\n", mlx->wolf->posx,
@@ -214,10 +217,36 @@ void render_wolf(t_mlx *mlx)
 		x++;
 	}
 	mlx_put_image_to_window(mlx->mlx_ptr, mlx->win_ptr, mlx->img, 0, 0);
+	// return (NULL);
 }
 
 
+void pthread(t_mlx *mlx)
+{
+	char *str;
+	t_mlx win[mlx->wolf->n_threads];
+	pthread_t tid[mlx->wolf->n_threads];
 
+	int n;
+	n = WIDTH / mlx->wolf->n_threads;
+	int i;
+	i = 0;
+	while (i < mlx->wolf->n_threads && (ft_memcpy((void*)&win[i], mlx, sizeof(t_mlx))))
+	{
+		win[i].wolf->p_start = i * n;
+		win[i].wolf->p_end = (i + 1) * n;
+		i++;
+	}
+	i = 0;
+	while (i < mlx->wolf->n_threads)
+	{
+		pthread_create(&tid[i], NULL, render_wolf, &win[i]);
+		i++;
+	}
+	while (--i >= 0)
+		pthread_join(tid[i], NULL);
+
+}
 
 
 int main(int argc, char **argv)
@@ -232,6 +261,7 @@ int main(int argc, char **argv)
 	read_file((fd = open(argv[1], O_RDONLY)), (mlx = init_mlx("raycaster")));
 	mlx->wolf->worldMap = process_map((fd = open(argv[1], O_RDONLY)), mlx);
 
+	// pthread(mlx);
 	render_wolf(mlx);
 	// // mlx_loop_hook(mlx->mlx_ptr, loop_hook, mlx);
 	mlx_hook(mlx->win_ptr, 2, 0, keys, mlx);

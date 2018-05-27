@@ -53,6 +53,10 @@ typedef struct s_wolf
     int side;
     int **worldMap;
     int **textures;
+    //threads
+    int n_threads;
+    int p_start;
+    int p_end;
 }               t_wolf;
 
 typedef struct s_map
