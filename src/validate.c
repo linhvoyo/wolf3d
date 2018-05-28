@@ -12,17 +12,17 @@ int validate_line(char *str, int map_width, int map_height)
   {
     printf("%c", str[i]);
     if (map_height == 0 && str[i] == '0')
-        exit(1);
+        check_error(0, "all map edges must be a wall");
     if ((i % 2 == 0) && (str[i] < '0' || str[i] > '8'))
-        exit(1);
+        check_error(0, "map must only consist of chars '0' - '8' or ','");
     if ((i % 2 != 0) && (str[i] != ','))
-        exit(1);
+        check_error(0, "map tiles must be comma separated");
     if (str[i] == ',')
       count++;
     i++;
   }
   if (i != map_width || str[0] == '0' || str[i - 1] == '0' || str[i-1] == ',')
-    exit(1);
+    check_error(0, "invalid map");
   return count;
 }
 
@@ -38,7 +38,7 @@ int **process_map(int fd, t_mlx *mlx)
   printf("width %d\n", mlx->map->mw);
   printf("height %d\n", mlx->map->mh);
   if (!(map = malloc(sizeof(int*) * mlx->map->mh)))
-    exit(0);
+    check_error(0, "failed to malloc map");
   i = 0;
   while (i < mlx->map->mh)
      map[i++] = malloc(sizeof(int) * mlx->map->mw);
@@ -68,6 +68,7 @@ void read_file(int fd, t_mlx *mlx)
   int ret;
   char *line;
 
+  check_error(fd, "failed to open file. (check filepath)");
   while ((ret = get_next_line(fd, &line)))
   {
     if (mlx->map->mw == 0)
@@ -78,4 +79,21 @@ void read_file(int fd, t_mlx *mlx)
   }
   mlx->map->mw -= mlx->map->commas;
   close(fd);
+}
+
+void	usage(void)
+{
+	ft_putstr("usage: ./wolf3d <MAP_FILE>\n");
+	exit(EXIT_SUCCESS);
+}
+
+void	check_error(int err, char *msg)
+{
+	if (err < 1)
+	{
+		ft_putstr("- ERROR: ");
+		ft_putstr(msg);
+		ft_putstr("\n");
+		exit(1);
+	}
 }

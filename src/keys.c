@@ -5,7 +5,7 @@ int keys(int key, t_mlx *mlx)
 {
   (void)mlx;
 
-  key == 53 ? exit(EXIT_SUCCESS) : 0;
+  key == 53 ? close_wolf3D() : 0;
   if (key == 126)
   {
     if (!(mlx->wolf->worldMap[(int)(mlx->wolf->posx + mlx->wolf->dirx * 0.15)][(int)(mlx->wolf->posy)]))
@@ -44,6 +44,19 @@ int keys(int key, t_mlx *mlx)
   printf("key %d\n", key);
   // render_wolf(mlx);
   return (0);
+}
+
+int     hook_close(t_mlx *mlx)
+{
+	close_wolf3D();
+	return (0);
+}
+
+void	close_wolf3D()
+{
+	system("pkill wolf3d > /dev/null 2>&1");	
+	system("pkill afplay > /dev/null 2>&1");
+	exit(EXIT_SUCCESS);
 }
 
 // int loop_hook(t_mlx *mlx)

@@ -10,7 +10,9 @@
             },
             "includePath": [
                 "${workspaceFolder}",
-                "${workspaceFolder}/includes"
+                "${workspaceFolder}/includes",
+                "${workspaceFolder}/minilibx_macos",
+                "${workspaceFolder}/libft/includes"
             ],
             "defines": [],
             "macFrameworkPath": [

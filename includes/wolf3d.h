@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   wolf3d.h                                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: lilam <marvin@42.fr>                       +#+  +:+       +#+        */
+/*   By: nmolina <nmolina@student.42.us.org>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/05/03 20:18:32 by lilam             #+#    #+#             */
-/*   Updated: 2018/05/03 20:20:37 by lilam            ###   ########.fr       */
+/*   Updated: 2018/05/28 13:41:26 by nmolina          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -82,10 +82,14 @@ typedef struct s_mlx
 
 }               t_mlx;
 
-int keys(int key, t_mlx *mlx);
-void render_wolf(t_mlx *mlx);
-void read_file(int fd, t_mlx *mlx);
-int **process_map(int fd, t_mlx *mlx);
+int   keys(int key, t_mlx *mlx);
+void  render_wolf(t_mlx *mlx);
+void  read_file(int fd, t_mlx *mlx);
+int   **process_map(int fd, t_mlx *mlx);
+int   hook_close(t_mlx *mlx);
+void	close_wolf3D();
+void	usage(void);
+void	check_error(int err, char *msg);
 // int loop_hook(t_mlx *mlx);
 
 #endif

@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   main.c                                             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: lilam <marvin@42.fr>                       +#+  +:+       +#+        */
+/*   By: nmolina <nmolina@student.42.us.org>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/05/03 20:21:18 by lilam             #+#    #+#             */
-/*   Updated: 2018/05/13 17:17:25 by linh             ###   ########.fr       */
+/*   Updated: 2018/05/28 14:45:31 by nmolina          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -220,51 +220,30 @@ void render_wolf(t_mlx *mlx)
 	// return (NULL);
 }
 
-
-void pthread(t_mlx *mlx)
+void	play_music()
 {
-	char *str;
-	t_mlx win[mlx->wolf->n_threads];
-	pthread_t tid[mlx->wolf->n_threads];
-
-	int n;
-	n = WIDTH / mlx->wolf->n_threads;
-	int i;
-	i = 0;
-	while (i < mlx->wolf->n_threads && (ft_memcpy((void*)&win[i], mlx, sizeof(t_mlx))))
-	{
-		win[i].wolf->p_start = i * n;
-		win[i].wolf->p_end = (i + 1) * n;
-		i++;
-	}
-	i = 0;
-	while (i < mlx->wolf->n_threads)
-	{
-		pthread_create(&tid[i], NULL, render_wolf, &win[i]);
-		i++;
-	}
-	while (--i >= 0)
-		pthread_join(tid[i], NULL);
-
+	while (1)
+		system("afplay assets/get_them.mp3");
 }
-
 
 int main(int argc, char **argv)
 {
-	t_mlx *mlx;
-	int	fd;
-	// int textures[8][texWidth * texHeight];
+	t_mlx	*mlx;
+	int		fd;
 
-	// generate_texture(textures);
-	// printf("%d", textures[1][4]);
-
+	if (argc != 2)
+		usage();
+	fork() == 0 ? play_music() : 0;
 	read_file((fd = open(argv[1], O_RDONLY)), (mlx = init_mlx("raycaster")));
 	mlx->wolf->worldMap = process_map((fd = open(argv[1], O_RDONLY)), mlx);
-
-	// pthread(mlx);
 	render_wolf(mlx);
-	// // mlx_loop_hook(mlx->mlx_ptr, loop_hook, mlx);
 	mlx_hook(mlx->win_ptr, 2, 0, keys, mlx);
+	mlx_hook(mlx->win_ptr, 17, 0, hook_close, mlx);
+    // if (fork() == 0)
+    //     play_music();
+    // else
+    //     mlx_loop(mlx->mlx_ptr);
 	mlx_loop(mlx->mlx_ptr);
+		
 	return (0);
 }
