@@ -6,7 +6,7 @@
 /*   By: nmolina <nmolina@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/05/28 17:44:49 by lilam             #+#    #+#             */
-/*   Updated: 2018/05/28 20:36:41 by nmolina          ###   ########.fr       */
+/*   Updated: 2018/05/28 21:35:39 by lilam            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -22,8 +22,9 @@ void	rot_dir_plane(t_mlx *mlx, double theta)
 		mlx->wolf->diry * sin(theta);
 	mlx->wolf->diry = olddirx * sin(theta) + mlx->wolf->diry * cos(theta);
 	oldplanex = mlx->wolf->planex;
-	mlx->wolf->planex = oldplanex * cos(theta) - mlx->wolf->planey * sin(theta);
-	mlx->wolf->planey = mlx->wolf->planex * sin(theta) +
+	mlx->wolf->planex = mlx->wolf->planex * cos(theta)
+		- mlx->wolf->planey * sin(theta);
+	mlx->wolf->planey = oldplanex * sin(theta) +
 		mlx->wolf->planey * cos(theta);
 }
 
@@ -62,6 +63,14 @@ int		keys(int key, t_mlx *mlx)
 		rot_dir_plane(mlx, 0.045);
 	else if (key == 8)
 		mlx->controls *= -1;
+	else if (key == 46)
+	{
+		mlx->music *= -1;
+		if (mlx->music == 1)
+			system("while : ; do afplay assets/get_them.mp3 ; done &");
+		else if (mlx->music == -1)
+			system("pkill sh afplay > /dev/null 2>&1");
+	}
 	else
 		return (0);
 	render_wolf(mlx);
@@ -75,7 +84,7 @@ int		close_wolf3d(void)
 	return (0);
 }
 
-void	stop_music()
+void	stop_music(void)
 {
 	system("pkill sh afplay > /dev/null 2>&1");
 	exit(EXIT_SUCCESS);

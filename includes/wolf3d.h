@@ -70,6 +70,7 @@ typedef struct	s_mlx
 	t_map		*map;
 	pthread_t	music_thr;
 	int			controls;
+	int	music;
 }               t_mlx;
 
 void			calculate_ray(t_mlx *mlx, int x);
