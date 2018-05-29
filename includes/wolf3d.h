@@ -6,7 +6,7 @@
 /*   By: nmolina <nmolina@student.42.us.org>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/05/03 20:18:32 by lilam             #+#    #+#             */
-/*   Updated: 2018/05/28 13:41:26 by nmolina          ###   ########.fr       */
+/*   Updated: 2018/05/28 19:17:52 by lilam            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,80 +16,82 @@
 # include "libft.h"
 # include <math.h>
 # include <time.h>
+# include <fcntl.h>
 # define WIDTH 640
 # define HEIGHT 480
 # define texWidth 64
 # define texHeight 64
 
-typedef struct s_wolf
+typedef struct	s_wolf
 {
-    //direction vector
-    double dirx;
-    double diry;
-    //player position
-    double posy;
-    double posx;
-    //plance vector
-    double planex;
-    double planey;
-    double rayx;
-    double rayy;
-    //lenght of ray from current position to the next x or y
-    double distx;
-    double disty;
-    //lenght of ray from one x/y to the other
-    double delta_distx;
-    double delta_disty;
-    //total lenght of the ray
-    double per_wall_dist;
-    //direction in x or y: values are -1 or 1
-    int stepx;
-    int stepy;
-    //map position
-    int mapx;
-    int mapy;
-    //hit ends dda loop if hit == 1
-    int hit;
-    int side;
-    int **worldMap;
-    int **textures;
-    //threads
-    int n_threads;
-    int p_start;
-    int p_end;
-}               t_wolf;
+	double		dirx;
+	double		diry;
+	double		posy;
+	double		posx;
+	double		planex;
+	double		planey;
+	double		rayx;
+	double		rayy;
+	double		distx;
+	double		disty;
+	double		delta_distx;
+	double		delta_disty;
+	double		per_wall_dist;
+	int			stepx;
+	int			stepy;
+	int			mapx;
+	int			mapy;
+	int			hit;
+	int			side;
+	int			drawStart;
+	int			drawEnd;
+	int			**worldMap;
+	int			**textures;
+}				t_wolf;
 
-typedef struct s_map
+typedef struct	s_map
 {
-  int mw;
-  int mh;
-  int commas;
-}             t_map;
+	int			mw;
+	int			mh;
+	int			commas;
+}				t_map;
 
-typedef struct s_mlx
+typedef struct	s_mlx
 {
-  void *mlx_ptr;
-  void *win_ptr;
-  void *img;
-  int *img_ptr;
-  int bbp;
-  int stride;
-  int endian;
-  t_wolf   *wolf;
-  t_map     *map;
-  // clock_t last_frame;
-  // clock_t next_frame;
-
+	void		*mlx_ptr;
+	void		*win_ptr;
+	void		*img;
+	int			*img_ptr;
+	int			bbp;
+	int			stride;
+	int			endian;
+	t_wolf		*wolf;
+	t_map		*map;
+	pthread_t	music_thr;
+	int			controls;
 }               t_mlx;
 
-int   keys(int key, t_mlx *mlx);
-void  render_wolf(t_mlx *mlx);
-void  read_file(int fd, t_mlx *mlx);
-int   **process_map(int fd, t_mlx *mlx);
-int   hook_close(t_mlx *mlx);
-void	close_wolf3D();
-void	usage(void);
-void	check_error(int err, char *msg);
-// int loop_hook(t_mlx *mlx);
+void			calculate_ray(t_mlx *mlx, int x);
+void			calculate_step_sidedist(t_mlx *mlx, int x);
+void			dda(t_mlx *mlx, int x);
+void			draw_world(t_mlx *mlx, int x);
+void			render_wolf(t_mlx *mlx);
+
+int				validate_line(char *str, int map_width, int map_height);
+int				**process_map(int fd, t_mlx *mlx);
+void			read_file(int fd, t_mlx *mlx);
+void			usage(void);
+void			check_error(int err, char *msg);
+
+void			rot_dir_plane(t_mlx *mlx, double theta);
+void			move_up_down(t_mlx *mlx, int i);
+int				keys(int key, t_mlx *mlx);
+int			close_wolf3d(void);
+
+void			draw_pixel(t_mlx *mlx, int x, int y, int color);
+int				**generate_textures();
+void			 put_controls(void *mlx, void *w);
+t_mlx			*init_mlx(char *str);
+void			play_music();
 
 #endif
