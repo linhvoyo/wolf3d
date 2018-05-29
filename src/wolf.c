@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   wolf.c                                             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: lilam <marvin@42.fr>                       +#+  +:+       +#+        */
+/*   By: nmolina <nmolina@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/05/28 18:13:24 by lilam             #+#    #+#             */
-/*   Updated: 2018/05/28 18:50:17 by lilam            ###   ########.fr       */
+/*   Updated: 2018/05/28 20:34:46 by nmolina          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -85,17 +85,17 @@ void	draw_world(t_mlx *mlx, int x)
 	else
 		wallx = mlx->wolf->posx + mlx->wolf->per_wall_dist * mlx->wolf->rayx;
 	wallx = wallx - floor((wallx));
-	texx = (int)(wallx * (double)texWidth);
+	texx = (int)(wallx * (double)TEX_WIDTH);
 	if (mlx->wolf->side == 0 && mlx->wolf->rayx > 0)
-		texx = texWidth - texx - 1;
+		texx = TEX_WIDTH - texx - 1;
 	if (mlx->wolf->side == 1 && mlx->wolf->rayy < 0)
-		texx = texWidth - texx - 1;
+		texx = TEX_WIDTH - texx - 1;
 	while (mlx->wolf->drawStart < mlx->wolf->drawEnd)
 	{
 		texy = (((mlx->wolf->drawStart * 256 - HEIGHT * 128 + lineHeight * 128)
-					* texHeight) / lineHeight) / 256;
+					* TEX_HEIGHT) / lineHeight) / 256;
 		color = mlx->wolf->textures[mlx->wolf->worldMap[mlx->wolf->mapx]
-			[mlx->wolf->mapy] - 1][texHeight * texy + texx];
+			[mlx->wolf->mapy] - 1][TEX_HEIGHT * texy + texx];
 		(mlx->wolf->side == 1) ? (color = (color >> 1) & 8355711) : 0;
 		draw_pixel(mlx, x, mlx->wolf->drawStart++, color);
 	}

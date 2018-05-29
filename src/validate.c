@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   validate.c                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: lilam <marvin@42.fr>                       +#+  +:+       +#+        */
+/*   By: nmolina <nmolina@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/05/28 18:01:54 by lilam             #+#    #+#             */
-/*   Updated: 2018/05/28 18:13:10 by lilam            ###   ########.fr       */
+/*   Updated: 2018/05/28 19:52:48 by nmolina          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -22,6 +22,9 @@ int		validate_line(char *str, int map_width, int map_height)
 	count = 0;
 	while (str[i])
 	{
+		if (map_height == 1 || map_height == 2)
+			if (str[2] != '0' || str[4] != '0')
+				check_error(0, "invalid player start");
 		if (map_height == 0 && str[i] == '0')
 			check_error(0, "all map edges must be a wall");
 		if ((i % 2 == 0) && (str[i] < '0' || str[i] > '8'))

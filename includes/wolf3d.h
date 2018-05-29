@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   wolf3d.h                                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: nmolina <nmolina@student.42.us.org>        +#+  +:+       +#+        */
+/*   By: nmolina <nmolina@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/05/03 20:18:32 by lilam             #+#    #+#             */
-/*   Updated: 2018/05/28 19:17:52 by lilam            ###   ########.fr       */
+/*   Updated: 2018/05/28 20:26:07 by nmolina          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,10 +17,11 @@
 # include <math.h>
 # include <time.h>
 # include <fcntl.h>
+# include <signal.h>
 # define WIDTH 640
 # define HEIGHT 480
-# define texWidth 64
-# define texHeight 64
+# define TEX_WIDTH 64
+# define TEX_HEIGHT 64
 
 typedef struct	s_wolf
 {
@@ -86,7 +87,8 @@ void			check_error(int err, char *msg);
 void			rot_dir_plane(t_mlx *mlx, double theta);
 void			move_up_down(t_mlx *mlx, int i);
 int				keys(int key, t_mlx *mlx);
-int			close_wolf3d(void);
+int				close_wolf3d(void);
+void			stop_music();
 
 void			draw_pixel(t_mlx *mlx, int x, int y, int color);
 int				**generate_textures();

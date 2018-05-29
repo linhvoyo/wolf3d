@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   main.c                                             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: nmolina <nmolina@student.42.us.org>        +#+  +:+       +#+        */
+/*   By: nmolina <nmolina@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/05/03 20:21:18 by lilam             #+#    #+#             */
-/*   Updated: 2018/05/28 19:00:33 by lilam            ###   ########.fr       */
+/*   Updated: 2018/05/28 20:34:59 by nmolina          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -23,33 +23,37 @@ void 	draw_pixel(t_mlx *mlx, int x, int y, int color)
 int **generate_textures()
 {
 	int **arr;
-	int i = 0;
-	int j = 0;
+	int i;
+	int j;
 	int x_color;
 	int y_color;
 	int xy_color;
 
-	if (!(arr = malloc(sizeof(int*) * 8)))
+	if (!(arr = (int**)malloc(sizeof(int*) * 8)))
 		return (NULL);
-	while (i < 8)
-		arr[i++] = malloc(sizeof(int) * texWidth * texHeight);
 	i = 0;
-	while (i < texWidth)
+	while (i < 8)
+	{
+		arr[i] = (int*)malloc(sizeof(int) * 64 * 64);
+		i++;
+	}
+	i = 0;
+	while (i < TEX_WIDTH)
 	{
 		j = 0;
-		while (j < texHeight)
+		while (j < TEX_HEIGHT)
 		{
-			x_color = (i * 256 / texWidth) ^ (j * 256 / texHeight);
-			y_color = j * 256 / texHeight;
-			xy_color = j * 128 / texHeight + i * 128 / texWidth;
-			arr[0][texWidth * j + i] = 65536 * 254 * (i != j && i != texWidth - j);
-			arr[1][texWidth * j + i] = xy_color + 256 * xy_color + 65536 * xy_color;
-			arr[2][texWidth * j + i] = 256 * xy_color + 65536 * xy_color;
-			arr[3][texWidth * j + i] = x_color + 256 * x_color + 65536 * x_color;
-			arr[4][texWidth * j + i] = 256 * x_color;
-			arr[5][texWidth * j + i] = 65536 * 192 * (i % 16 && j % 16);
-			arr[6][texWidth * j + i] = 65536 * y_color;
-			arr[7][texWidth * j + i] = 128 + 256 * 128 + 65536 * 128;
+			x_color = (i * 256 / TEX_WIDTH) ^ (j * 256 / TEX_HEIGHT);
+			y_color = j * 256 / TEX_HEIGHT;
+			xy_color = j * 128 / TEX_HEIGHT + i * 128 / TEX_WIDTH;
+			arr[0][TEX_WIDTH * j + i] = 65536 * 254 * (i != j && i != TEX_WIDTH - j);
+			arr[1][TEX_WIDTH * j + i] = xy_color + 256 * xy_color + 65536 * xy_color;
+			arr[2][TEX_WIDTH * j + i] = 256 * xy_color + 65536 * xy_color;
+			arr[3][TEX_WIDTH * j + i] = x_color + 256 * x_color + 65536 * x_color;
+			arr[4][TEX_WIDTH * j + i] = 256 * x_color;
+			arr[5][TEX_WIDTH * j + i] = 65536 * 192 * (i % 16 && j % 16);
+			arr[6][TEX_WIDTH * j + i] = 65536 * y_color;
+			arr[7][TEX_WIDTH * j + i] = 128 + 256 * 128 + 65536 * 128;
 			j++;
 		}
 		i++;
@@ -84,8 +88,8 @@ t_mlx 	*init_mlx(char *str)
 	tmp->controls = 1;
 	if (!(tmp->wolf = malloc(sizeof(t_wolf))))
 		return (NULL);
-	tmp->wolf->posx = 22;
-	tmp->wolf->posy = 11.5;
+	tmp->wolf->posx = 2;
+	tmp->wolf->posy = 2.5;
 	tmp->wolf->dirx = -1;
 	tmp->wolf->diry = 0;
 	tmp->wolf->planex = 0;
@@ -100,7 +104,7 @@ t_mlx 	*init_mlx(char *str)
 
 void	play_music()
 {
-		system("while : ; do afplay assets/get_them.mp3 ; done &");
+	system("while : ; do afplay assets/get_them.mp3 ; done &");
 }
 
 int main(int argc, char **argv)
@@ -115,6 +119,7 @@ int main(int argc, char **argv)
 	render_wolf(mlx);
 	mlx_hook(mlx->win_ptr, 2, 0, keys, mlx);
 	mlx_hook(mlx->win_ptr, 17, 0, close_wolf3d, mlx);
+	signal(SIGINT, stop_music);
 	play_music();
 	mlx_loop(mlx->mlx_ptr);
 	return (0);

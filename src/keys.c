@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   keys.c                                             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: lilam <marvin@42.fr>                       +#+  +:+       +#+        */
+/*   By: nmolina <nmolina@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/05/28 17:44:49 by lilam             #+#    #+#             */
-/*   Updated: 2018/05/28 18:00:53 by lilam            ###   ########.fr       */
+/*   Updated: 2018/05/28 20:36:41 by nmolina          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -51,7 +51,6 @@ void	move_up_down(t_mlx *mlx, int i)
 
 int		keys(int key, t_mlx *mlx)
 {
-	(void)mlx;
 	key == 53 ? close_wolf3d() : 0;
 	if (key == 126)
 		move_up_down(mlx, 1);
@@ -74,4 +73,10 @@ int		close_wolf3d(void)
 	system("pkill sh afplay > /dev/null 2>&1");
 	exit(EXIT_SUCCESS);
 	return (0);
+}
+
+void	stop_music()
+{
+	system("pkill sh afplay > /dev/null 2>&1");
+	exit(EXIT_SUCCESS);
 }
