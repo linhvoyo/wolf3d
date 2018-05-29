@@ -6,7 +6,7 @@
 /*   By: nmolina <nmolina@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/05/03 20:18:32 by lilam             #+#    #+#             */
-/*   Updated: 2018/05/28 20:26:07 by nmolina          ###   ########.fr       */
+/*   Updated: 2018/05/28 21:44:43 by nmolina          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -44,9 +44,9 @@ typedef struct	s_wolf
 	int			mapy;
 	int			hit;
 	int			side;
-	int			drawStart;
-	int			drawEnd;
-	int			**worldMap;
+	int			draw_start;
+	int			draw_end;
+	int			**world_map;
 	int			**textures;
 }				t_wolf;
 
@@ -70,8 +70,8 @@ typedef struct	s_mlx
 	t_map		*map;
 	pthread_t	music_thr;
 	int			controls;
-	int	music;
-}               t_mlx;
+	int			music;
+}				t_mlx;
 
 void			calculate_ray(t_mlx *mlx, int x);
 void			calculate_step_sidedist(t_mlx *mlx, int x);
@@ -93,7 +93,7 @@ void			stop_music();
 
 void			draw_pixel(t_mlx *mlx, int x, int y, int color);
 int				**generate_textures();
-void			 put_controls(void *mlx, void *w);
+void			put_controls(void *mlx, void *w);
 t_mlx			*init_mlx(char *str);
 void			play_music();
 

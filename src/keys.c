@@ -6,7 +6,7 @@
 /*   By: nmolina <nmolina@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/05/28 17:44:49 by lilam             #+#    #+#             */
-/*   Updated: 2018/05/28 21:35:39 by lilam            ###   ########.fr       */
+/*   Updated: 2018/05/28 21:46:48 by nmolina          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -32,19 +32,19 @@ void	move_up_down(t_mlx *mlx, int i)
 {
 	if (i == 1)
 	{
-		if (!(mlx->wolf->worldMap[(int)(mlx->wolf->posx + mlx->wolf->dirx *
+		if (!(mlx->wolf->world_map[(int)(mlx->wolf->posx + mlx->wolf->dirx *
 						0.15)][(int)(mlx->wolf->posy)]))
 			mlx->wolf->posx += mlx->wolf->dirx * 0.15;
-		if (!(mlx->wolf->worldMap[(int)(mlx->wolf->posx)][(int)(mlx->wolf->posy
+		if (!(mlx->wolf->world_map[(int)(mlx->wolf->posx)][(int)(mlx->wolf->posy
 						+ mlx->wolf->diry * 0.15)]))
 			mlx->wolf->posy += mlx->wolf->diry * 0.15;
 	}
 	else if (i == 2)
 	{
-		if (!(mlx->wolf->worldMap[(int)(mlx->wolf->posx - mlx->wolf->dirx *
+		if (!(mlx->wolf->world_map[(int)(mlx->wolf->posx - mlx->wolf->dirx *
 						0.15)][(int)(mlx->wolf->posy)]))
 			mlx->wolf->posx -= mlx->wolf->dirx * 0.15;
-		if (!(mlx->wolf->worldMap[(int)(mlx->wolf->posx)][(int)(mlx->wolf->posy
+		if (!(mlx->wolf->world_map[(int)(mlx->wolf->posx)][(int)(mlx->wolf->posy
 						- mlx->wolf->diry * 0.15)]))
 			mlx->wolf->posy -= mlx->wolf->diry * 0.15;
 	}

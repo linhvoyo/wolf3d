@@ -6,7 +6,7 @@
 /*   By: nmolina <nmolina@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/05/28 18:13:24 by lilam             #+#    #+#             */
-/*   Updated: 2018/05/28 20:34:46 by nmolina          ###   ########.fr       */
+/*   Updated: 2018/05/28 21:46:46 by nmolina          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -61,7 +61,7 @@ void	dda(t_mlx *mlx, int x)
 			mlx->wolf->mapy += mlx->wolf->stepy;
 			mlx->wolf->side = 1;
 		}
-		if (mlx->wolf->worldMap[mlx->wolf->mapx][mlx->wolf->mapy] > 0)
+		if (mlx->wolf->world_map[mlx->wolf->mapx][mlx->wolf->mapy] > 0)
 			mlx->wolf->hit = 1;
 	}
 	if (mlx->wolf->side == 0)
@@ -76,10 +76,10 @@ void	draw_world(t_mlx *mlx, int x)
 {
 	WORLD_VARS;
 	lineHeight = (int)(HEIGHT / mlx->wolf->per_wall_dist);
-	mlx->wolf->drawStart = -lineHeight / 2 + HEIGHT / 2;
-	mlx->wolf->drawEnd = lineHeight / 2 + HEIGHT / 2;
-	(mlx->wolf->drawStart < 0) ? mlx->wolf->drawStart = 0 : 0;
-	(mlx->wolf->drawEnd >= HEIGHT) ? (mlx->wolf->drawEnd = HEIGHT - 1) : 0;
+	mlx->wolf->draw_start = -lineHeight / 2 + HEIGHT / 2;
+	mlx->wolf->draw_end = lineHeight / 2 + HEIGHT / 2;
+	(mlx->wolf->draw_start < 0) ? mlx->wolf->draw_start = 0 : 0;
+	(mlx->wolf->draw_end >= HEIGHT) ? (mlx->wolf->draw_end = HEIGHT - 1) : 0;
 	if (mlx->wolf->side == 0)
 		wallx = mlx->wolf->posy + mlx->wolf->per_wall_dist * mlx->wolf->rayy;
 	else
@@ -90,14 +90,14 @@ void	draw_world(t_mlx *mlx, int x)
 		texx = TEX_WIDTH - texx - 1;
 	if (mlx->wolf->side == 1 && mlx->wolf->rayy < 0)
 		texx = TEX_WIDTH - texx - 1;
-	while (mlx->wolf->drawStart < mlx->wolf->drawEnd)
+	while (mlx->wolf->draw_start < mlx->wolf->draw_end)
 	{
-		texy = (((mlx->wolf->drawStart * 256 - HEIGHT * 128 + lineHeight * 128)
+		texy = (((mlx->wolf->draw_start * 256 - HEIGHT * 128 + lineHeight * 128)
 					* TEX_HEIGHT) / lineHeight) / 256;
-		color = mlx->wolf->textures[mlx->wolf->worldMap[mlx->wolf->mapx]
+		color = mlx->wolf->textures[mlx->wolf->world_map[mlx->wolf->mapx]
 			[mlx->wolf->mapy] - 1][TEX_HEIGHT * texy + texx];
 		(mlx->wolf->side == 1) ? (color = (color >> 1) & 8355711) : 0;
-		draw_pixel(mlx, x, mlx->wolf->drawStart++, color);
+		draw_pixel(mlx, x, mlx->wolf->draw_start++, color);
 	}
 }
 

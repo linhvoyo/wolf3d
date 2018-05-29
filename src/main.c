@@ -6,7 +6,7 @@
 /*   By: nmolina <nmolina@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/05/03 20:21:18 by lilam             #+#    #+#             */
-/*   Updated: 2018/05/28 21:34:52 by lilam            ###   ########.fr       */
+/*   Updated: 2018/05/28 21:46:49 by nmolina          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -102,7 +102,7 @@ int		main(int argc, char **argv)
 		usage();
 	read_file((fd = open(argv[1], O_RDONLY)),
 			(mlx = init_mlx("raycaster")));
-	mlx->wolf->worldMap = process_map(
+	mlx->wolf->world_map = process_map(
 			(fd = open(argv[1], O_RDONLY)), mlx);
 	render_wolf(mlx);
 	mlx_hook(mlx->win_ptr, 2, 0, keys, mlx);
